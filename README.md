@@ -30,12 +30,15 @@ Backend MVP em `Node.js + TypeScript + Prisma + PostgreSQL` com pipeline assínc
 ## Como rodar
 
 1. Copie `.env.example` para `.env` (se necessario) e ajuste credenciais.
-2. Gere o cliente Prisma:
+2. Suba PostgreSQL + Redis (recomendado via Docker):
+   - `docker compose up -d`
+3. Gere o cliente Prisma:
    - `npm run prisma:generate`
-3. Rode migrations:
-   - `npm run prisma:migrate`
-4. Suba Redis e PostgreSQL localmente.
-5. Rode em dev:
+4. Rode migration inicial:
+   - `npm run prisma:migrate:init`
+5. Rode seed inicial (templates e perfis criativos):
+   - `npm run prisma:seed`
+6. Rode em dev:
    - `npm run dev`
 
 ## Payload de exemplo
@@ -55,4 +58,29 @@ Backend MVP em `Node.js + TypeScript + Prisma + PostgreSQL` com pipeline assínc
   "storyFrameCount": 3,
   "generateStories": true
 }
+```
+
+## Teste rapido com curl
+
+```bash
+curl -X POST http://localhost:3000/generation-jobs \
+  -H "Content-Type: application/json" \
+  -d '{
+    "projectId": "project_default",
+    "postTitle": "5 erros de copy",
+    "topic": "Copy para Instagram",
+    "objective": "Aumentar salvamentos",
+    "audience": "Criadores e infoprodutores",
+    "cta": "Comente COPY para receber o checklist",
+    "mode": "hybrid",
+    "slideCount": 7,
+    "storyFrameCount": 3,
+    "generateStories": true
+  }'
+```
+
+Consultar status:
+
+```bash
+curl http://localhost:3000/generation-jobs/<generationJobId>
 ```
